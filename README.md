@@ -25,23 +25,7 @@ GCIG is a framework for automatically generating high-quality cross-document ins
 ## Project Structure
 
 ```
-GCIG/
-├── GraphGen/              # Knowledge-driven synthetic data generation framework
-│   ├── graphgen/          # Core library
-│   ├── examples/          # Usage examples
-│   ├── baselines/         # Baseline methods
-│   └── tests/             # Test cases
-├── EKG-Instruct/          # Enhanced Knowledge Graph instruction generation
-│   ├── GC/                # Graph construction modules
-│   └── generate/          # Instruction generation modules
-├── graphrag/              # GraphRAG implementation
-│   ├── index/             # Indexing modules
-│   ├── query/             # Query modules
-│   └── prompts/           # Prompt templates
-├── nayak-aclfindings24-code/  # Baseline evaluation (Bonito)
-│   ├── evaluation/        # Evaluation scripts
-│   └── results/           # Evaluation results
-└── human-eval/            # Human evaluation framework
+
 ```
 
 ## Installation
@@ -66,8 +50,8 @@ conda activate gcig
 # Install dependencies
 pip install -r requirements.txt
 
-# Install GraphGen
-cd GraphGen
+# Install GCIG
+cd GCIG
 pip install -e .
 cd ..
 ```
