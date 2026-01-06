@@ -150,7 +150,7 @@ If you find this work useful, please cite our paper:
 @inproceedings{gcig2025,
   title={GCIG: GraphRAG-based Cross-document Instruction Generation for Boosting LLM Reasoning},
   author={},
-  booktitle={Proceedings of the 63rd Annual Meeting of the Association for Computational Linguistics},
+  booktitle={},
   year={2025}
 }
 ```
