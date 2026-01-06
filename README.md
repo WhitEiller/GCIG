@@ -1,8 +1,5 @@
 # GCIG: GraphRAG-based Cross-document Instruction Generation
 
-[![Paper](https://img.shields.io/badge/Paper-ACL%202025-blue)](https://arxiv.org/)
-[![License](https://img.shields.io/badge/License-Apache%202.0-green.svg)](LICENSE)
-[![Python](https://img.shields.io/badge/Python-3.8+-yellow.svg)](https://www.python.org/)
 
 Official implementation of the paper: **"GCIG: GraphRAG-based Cross-document Instruction Generation for Boosting LLM Reasoning"**
 
