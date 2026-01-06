@@ -1,0 +1,285 @@
+### 生成答案
+
+import os
+import json
+import asyncio
+import aiofiles
+from gpt import call_chatgpt
+from concurrent.futures import ThreadPoolExecutor
+import time
+from tqdm import tqdm
+from datetime import datetime
+
+# Configuration
+INPUT_JSON = './extracted_questions_from_answer.json'
+OUTPUT_JSON = 'questions_with_answers.json'
+LOG_FILE = 'gpt_interaction_log.txt'
+MAX_CONCURRENT = 8  # Maximum concurrent GPT calls
+BATCH_SIZE = 80    # Number of questions to process in each batch
+SAVE_INTERVAL = 2000  # Save every 10000 questions
+
+async def log_gpt_interaction(question_id, question_type, question, prompt, answer, processing_time):
+    """Log GPT interaction details to file"""
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    log_entry = f"""
+{'='*80}
+时间: {timestamp}
+问题ID: {question_id}
+问题类型: {question_type}
+原始问题: {question}
+
+发送给GPT的完整提示:
+{'-'*40}
+{prompt}
+{'-'*40}
+
+GPT回答:
+{answer}
+
+处理耗时: {processing_time:.2f}秒
+{'='*80}
+
+"""
+    
+    async with aiofiles.open(LOG_FILE, 'a', encoding='utf-8') as f:
+        await f.write(log_entry)
+
+def load_existing_answers():
+    """Load existing answers from output file if it exists"""
+    if os.path.exists(OUTPUT_JSON):
+        try:
+            with open(OUTPUT_JSON, 'r', encoding='utf-8') as f:
+                return {q['id']: q.get('answer', '') for q in json.load(f)}
+        except Exception as e:
+            print(f"Error loading existing answers: {str(e)}")
+    return {}
+
+async def process_question(question_data, executor, existing_answers):
+    """Process a single question using GPT"""
+    start_time = time.time()
+    
+    try:
+        # Skip if already has an answer in existing_answers
+        if question_data['id'] in existing_answers and existing_answers[question_data['id']]:
+            question_data['answer'] = existing_answers[question_data['id']]
+            return question_data, True  # Return True to indicate skipped
+
+        # Skip if already has an answer in current data
+        if question_data.get("answer"):
+            return question_data, True  # Return True to indicate skipped
+
+        # Prepare the prompt from question and sources
+        prompt = f"""Context:
+{chr(10).join(question_data['file_sources'])}
+
+Question Type: {question_data['type']}
+
+Question: {question_data['question']}
+
+Please provide a simple and brief answer based on the context above, And remember making answer as simple and brief as possible."""
+        
+        # Call GPT in thread pool
+        loop = asyncio.get_event_loop()
+        answer = await loop.run_in_executor(
+            executor,
+            lambda: call_chatgpt(prompt)
+        )
+        
+        processing_time = time.time() - start_time
+        
+        if answer:
+            question_data["answer"] = answer
+            # Log the successful interaction
+            await log_gpt_interaction(
+                question_data['id'],
+                question_data['type'],
+                question_data['question'],
+                prompt,
+                answer,
+                processing_time
+            )
+        else:
+            question_data["answer"] = ""  # Ensure answer field exists even if empty
+            # Log the failed interaction
+            await log_gpt_interaction(
+                question_data['id'],
+                question_data['type'],
+                question_data['question'],
+                prompt,
+                "无回答或回答为空",
+                processing_time
+            )
+            
+        # Add small delay to avoid API rate limits
+        await asyncio.sleep(10)
+        
+        return question_data, False  # Return False to indicate processed
+        
+    except Exception as e:
+        processing_time = time.time() - start_time
+        error_msg = f"处理出错: {str(e)}"
+        
+        print(f"Error processing question {question_data.get('id', 'unknown')}: {str(e)}")
+        
+        # Log the error interaction
+        await log_gpt_interaction(
+            question_data.get('id', 'unknown'),
+            question_data.get('type', 'unknown'),
+            question_data.get('question', 'unknown'),
+            prompt if 'prompt' in locals() else "提示生成失败",
+            error_msg,
+            processing_time
+        )
+        
+        # Log error to separate error file
+        async with aiofiles.open('error_log.txt', 'a', encoding='utf-8') as f:
+            await f.write(f"Question {question_data.get('id', 'unknown')}: {str(e)}\n")
+        
+        # Ensure answer field exists even on error
+        question_data["answer"] = ""
+        return question_data, False
+
+async def process_batch(questions, executor, existing_answers):
+    """Process a batch of questions"""
+    tasks = [process_question(q, executor, existing_answers) for q in questions]
+    results = await asyncio.gather(*tasks)
+    return results
+
+async def save_progress(all_questions, filename=None):
+    """Save current progress to output file"""
+    if filename is None:
+        filename = OUTPUT_JSON
+    
+    async with aiofiles.open(filename, 'w', encoding='utf-8') as f:
+        await f.write(json.dumps(all_questions, indent=2, ensure_ascii=False))
+
+async def main():
+    # Initialize log file
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    init_log = f"""
+{'='*80}
+GPT问答处理日志
+开始时间: {timestamp}
+输入文件: {INPUT_JSON}
+输出文件: {OUTPUT_JSON}
+最大并发数: {MAX_CONCURRENT}
+批次大小: {BATCH_SIZE}
+保存间隔: {SAVE_INTERVAL}
+{'='*80}
+
+"""
+    
+    # Create/clear log file
+    async with aiofiles.open(LOG_FILE, 'w', encoding='utf-8') as f:
+        await f.write(init_log)
+    
+    # Load existing answers
+    existing_answers = load_existing_answers()
+    print(f"Loaded {len(existing_answers)} existing answers")
+    
+    # Create thread pool
+    executor = ThreadPoolExecutor(max_workers=MAX_CONCURRENT)
+    
+    try:
+        # Read the input JSON file
+        async with aiofiles.open(INPUT_JSON, 'r', encoding='utf-8') as f:
+            content = await f.read()
+            questions = json.loads(content)
+        
+        total_questions = len(questions)
+        print(f"Total questions to process: {total_questions}")
+        
+        # Log summary to file
+        summary_log = f"总问题数: {total_questions}\n已有答案数: {len(existing_answers)}\n待处理数: {total_questions - len([q for q in questions if q['id'] in existing_answers and existing_answers[q['id']]])}\n\n"
+        async with aiofiles.open(LOG_FILE, 'a', encoding='utf-8') as f:
+            await f.write(summary_log)
+        
+        # Initialize all questions with existing answers
+        for q in questions:
+            if q['id'] in existing_answers:
+                q['answer'] = existing_answers[q['id']]
+            elif not q.get('answer'):
+                q['answer'] = ""  # Initialize empty answer field
+        
+        # Process questions in batches with progress bar
+        processed_count = 0
+        skipped_count = 0
+        total_processed = 0  # Track total processed questions for interval saving
+        
+        with tqdm(total=total_questions, desc="Processing questions") as pbar:
+            for i in range(0, total_questions, BATCH_SIZE):
+                batch = questions[i:i + BATCH_SIZE]
+                batch_results = await process_batch(batch, executor, existing_answers)
+                
+                # Update questions with results and count processed/skipped
+                for j, (result_question, was_skipped) in enumerate(batch_results):
+                    questions[i + j] = result_question
+                    if was_skipped:
+                        skipped_count += 1
+                    else:
+                        processed_count += 1
+                    total_processed += 1
+                    pbar.update(1)
+                
+                # Save progress after each batch (regular save)
+                await save_progress(questions)
+                
+                # Check if we need to save interval checkpoint
+                if total_processed % SAVE_INTERVAL == 0:
+                    interval_filename = f"answer_{total_processed}.json"
+                    await save_progress(questions, interval_filename)
+                    print(f"\n已处理 {total_processed} 个问题，保存到 {interval_filename}")
+                
+                # Add delay between batches to avoid API rate limits
+                if i + BATCH_SIZE < total_questions:
+                    await asyncio.sleep(2)
+        
+        # Final save with total count
+        final_filename = f"answer_{total_processed}.json"
+        await save_progress(questions, final_filename)
+        print(f"\n最终保存到 {final_filename}")
+        
+        # Log completion summary
+        completion_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        completion_log = f"""
+{'='*80}
+处理完成总结
+完成时间: {completion_time}
+总问题数: {total_questions}
+新处理数: {processed_count}
+跳过数: {skipped_count}
+最终保存文件: {final_filename}
+{'='*80}
+"""
+        async with aiofiles.open(LOG_FILE, 'a', encoding='utf-8') as f:
+            await f.write(completion_log)
+        
+        print(f"\nProcessing completed!")
+        print(f"Total questions: {total_questions}")
+        print(f"Processed: {processed_count}")
+        print(f"Skipped (already answered): {skipped_count}")
+        print(f"Results saved to {OUTPUT_JSON}")
+        print(f"Final results saved to {final_filename}")
+        print(f"Detailed log saved to {LOG_FILE}")
+        
+    except Exception as e:
+        print(f"Error in main process: {str(e)}")
+        # Log the main error
+        error_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        error_log = f"""
+{'='*80}
+主程序错误
+时间: {error_time}
+错误信息: {str(e)}
+{'='*80}
+"""
+        async with aiofiles.open(LOG_FILE, 'a', encoding='utf-8') as f:
+            await f.write(error_log)
+    finally:
+        executor.shutdown()
+
+if __name__ == "__main__":
+    start_time = time.time()
+    asyncio.run(main())
+    end_time = time.time()
+    print(f"Total execution time: {end_time - start_time:.2f} seconds") 
