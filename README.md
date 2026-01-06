@@ -97,19 +97,9 @@ bash run_eval_all_models.sh
 
 ## Experimental Results
 
-### Knowledge-Intensive Tasks
-
-| Model | Method | SeedBench | CMMLU | GPQA-Diamond |
-|:------|:-------|:---------:|:-----:|:------------:|
-| Qwen2.5-7B | Baseline | 51.5 | **75.8** | 33.3 |
-| Qwen2.5-7B | + GCIG | **65.9** | 73.6 | **40.0** |
-
-### Multi-hop Reasoning (AIME)
-
-| Model | Method | AIME24 | AIME25 |
-|:------|:-------|:------:|:------:|
-| Qwen2.5-7B | Baseline | 16.7 | 7.2 |
-| Qwen2.5-7B | + GCIG | **20.6** | **22.7** |
+<p align="center">
+  <img src="4.png" width="90%" alt="GCIG Framework Overview"/>
+</p>
 
 ## Components
 
