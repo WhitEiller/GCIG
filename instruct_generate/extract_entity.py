@@ -11,11 +11,12 @@ from datetime import datetime
 import openai
 import os
 import random
+import itertools
 from graphrag.llm import OpenAIModel
 from graphrag.model import TextUnit
 from graphrag.query import generate
 from graphrag.query.loader import load_graph, load_parquet
-from prompt import question_prompt
+from prompt_text import question_prompt1, question_prompt2, question_prompt3, question_prompt4
 from tqdm import tqdm
 def get_context(texts, graph=None):
     context_dict = {"Entities": [], "Relationships": [], "Sources": []}
@@ -42,8 +43,8 @@ def get_context(texts, graph=None):
     return "\n".join(context), context_dict
 
 
-text_unit_path = "/mnt/disk/yh24/test1/graphrag-purity/graph_privacy/text_units/text_units-1-65.parquet"  # TODO: 文本块的路径
-graph_dir = "/mnt/disk/yh24/test1/graphrag-purity/graph_privacy/graph"  # TODO: 修改为graph的文件夹
+text_unit_path = "/mnt/disk/yh24/test1/graphrag-purity/graph_contract/text_units/text_units-1-65.parquet"  # TODO: 文本块的路径
+graph_dir = "/mnt/disk/yh24/test1/graphrag-purity/graph_contract/graph"  # TODO: 修改为graph的文件夹
 graph, entities, relations = load_graph(graph_dir)
 text_units = load_parquet(text_unit_path)
 text_units = [TextUnit.from_dict(text_unit) for text_unit in text_units]
@@ -63,15 +64,25 @@ for text_unit in text_units:
             id2ent[entity].text_units = []
         id2ent[entity].text_units.append(text_unit.id)
 # 打开文件并逐行读取
-question = [(entity.name,entity.alias) for entity in entities if entity.alias is not None]
-sorted_question = sorted(question, key=lambda x: len(x[1]))  # 按 alias 的长度排序
-sorted_question = sorted_question
+question = [(entity.name,entity.alias) for entity in entities]
+sorted_question = question
 print(len(sorted_question))
-used_pairs = set()
+used_pairs = set()  # 全局跟踪已使用的组合
 start = 0
 output_folder_question = "question_outputs"
 os.makedirs(output_folder_question, exist_ok=True)  # 创建文件夹（如果不存在）
+max_combinations = 2000  # 限制生成的组合数量
+combination_count = 0  # 计数器跟踪已生成的组合数量
+
+# 选择模式：1=单个文本, 2=两个文本, 3=三个文本, 4=四个文本
+mode = 4  # 当前模式，可以根据需要修改
+print(f"当前模式：生成包含 {mode} 个文本的组合")
 for idx,ques in enumerate(tqdm(sorted_question[start:], desc="Processing questions")):
+    # 检查是否已达到组合数量限制
+    if combination_count >= max_combinations:
+        print(f"已达到最大组合数量限制 {max_combinations}，停止生成")
+        break
+    
     query = ques[0]
     relevant_text_units = retrieve_text_units(
         query,
@@ -99,37 +110,103 @@ for idx,ques in enumerate(tqdm(sorted_question[start:], desc="Processing questio
     relevant_text_units_all  = retrieve_text_units(
         query,
         candidate_text_units,
-        top_k=6,
+        top_k=5,
     )
-    all_combinations = [
-        (a, b)
-        for i, a in enumerate(relevant_text_units_all)
-        for j, b in enumerate(relevant_text_units_all)
-        if i < j and frozenset((a.id, b.id)) not in used_pairs
-    ]
-
-    if not all_combinations:
-        print(f"Warning: No unused pairs available at idx {idx}")
-        continue  # 或者跳过、或继续复用已有组合等
-
-    # 确保选择的两个单元不相同
-    while True:
-        selected_pair = random.choice(all_combinations)
-        if selected_pair[0] != selected_pair[1]:  # 确保两个单元不相同
-            selected_units = [selected_pair[0], selected_pair[1]]
+    # 直接使用relevant_text_units_all生成两个相关文本
+    selected_units = relevant_text_units_all
+    
+    if not selected_units:
+        print(f"没有找到相关文本单元: {idx + start}")
+        continue
+    
+    print(f"找到 {len(selected_units)} 个相关文本单元")
+    
+    # 检查文本单元数量是否满足当前模式要求
+    if len(selected_units) < mode:
+        print(f"文本单元数量少于{mode}个，跳过: {idx + start}")
+        continue
+    
+    # 根据模式生成组合
+    if mode == 1:
+        # 单个文本模式：直接使用每个文本单元
+        combinations = [(unit,) for unit in selected_units]
+    else:
+        # 多个文本模式：生成指定数量的组合
+        combinations = list(itertools.combinations(selected_units, mode))
+    
+    print(f"生成 {len(combinations)} 个包含{mode}个文本的组合")
+    
+    # 为每个组合生成问题文件
+    for combo_idx, combination in enumerate(combinations):
+        # 检查是否已达到组合数量限制
+        if combination_count >= max_combinations:
+            print(f"已达到最大组合数量限制 {max_combinations}，停止生成")
             break
-
-    # 记录该组合
-    used_pairs.add(frozenset((selected_pair[0].id, selected_pair[1].id)))
-    required_graph = True
-    text_context = [text_unit.content for text_unit in selected_units]
-    context,context_dict = get_context(text_context, subgraph if required_graph else None)
-    qa = "Generate a reasonable question based on the entities and source and the following rules.\n"
-    rule = "**Rules**\n" + question_prompt + "\n"
-    sor = "**Sources**\n" + str(context_dict["Sources"]) + "\n"
-    # print(len(sor))
-    question_to = qa + rule + sor + "**Question**\n"
-    output_filename = os.path.join(output_folder_question, f"question_{idx + start}.txt")
-    with open(output_filename, "w", encoding="utf-8") as q_file:
-        q_file.write(question_to)
-
+        
+        # 根据模式处理不同的组合
+        if mode == 1:
+            # 单个文本模式
+            unit1 = combination[0]
+            text_context = [unit1.content]
+            unit_ids = [unit1.id]
+            
+            # 检查是否已经处理过这个文本
+            current_combination = frozenset([unit1.id])
+            if current_combination in used_pairs:
+                print(f"跳过重复文本: {unit1.id}")
+                continue
+        else:
+            # 多个文本模式
+            unit_ids = [unit.id for unit in combination]
+            text_context = [unit.content for unit in combination]
+            
+            # 检查是否有相同内容的文本单元
+            contents = [unit.content for unit in combination]
+            if len(set(contents)) < len(contents):
+                print(f"跳过包含相同内容的组合: {unit_ids}")
+                continue
+            
+            # 生成当前组合的唯一标识
+            current_combination = frozenset(unit_ids)
+            
+            # 检查是否已经处理过这个组合
+            if current_combination in used_pairs:
+                print(f"跳过重复组合: {unit_ids}")
+                continue
+        
+        # 记录当前组合
+        used_pairs.add(current_combination)
+        combination_count += 1  # 增加计数器
+        
+        required_graph = True
+        context,context_dict = get_context(text_context, subgraph if required_graph else None)
+        qa = "Generate a reasonable question based on the entities and source and the following rules.\n"
+        
+        # 根据模式选择对应的prompt
+        if mode == 1:
+            selected_prompt = question_prompt1
+        elif mode == 2:
+            selected_prompt = question_prompt2
+        elif mode == 3:
+            selected_prompt = question_prompt3
+        elif mode == 4:
+            selected_prompt = question_prompt4
+        else:
+            selected_prompt = question_prompt2  # 默认使用prompt2
+        
+        rule = "**Rules**\n" + selected_prompt + "\n"
+        sor = "**Sources**\n" + str(context_dict["Sources"]) + "\n"
+        # print(len(sor))
+        question_to = qa + rule + sor + "**Question**\n"
+        output_filename = os.path.join(output_folder_question, f"question_{idx + start}_mode_{mode}_combo_{combo_idx}.txt")
+        with open(output_filename, "w", encoding="utf-8") as q_file:
+            q_file.write(question_to)
+        
+        print(f"已处理组合 {combo_idx + 1}/{len(combinations)} for question {idx + start} (模式{mode}, 总计: {combination_count}/{max_combinations})")
+    
+    # 检查是否已达到限制
+    if combination_count >= max_combinations:
+        print(f"已达到最大组合数量限制 {max_combinations}，停止处理")
+        break
+    
+    print(f"问题 {idx + start} 完成处理，共生成 {len(combinations)} 个组合 (模式{mode}, 总计: {combination_count}/{max_combinations})")
