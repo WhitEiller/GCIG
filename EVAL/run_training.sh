@@ -1,1 +1,0 @@
-deepspeed training/train_decoder.py       --model_name_or_path /mnt/disk/yh24/test1/bonito/Mistral-7B-v0.1       --json_path data/synthetic_results_clean.json       --output_dir ./output/mistral-finetuned5       --per_device_train_batch_size 1       --gradient_accumulation_steps 16       --num_train_epochs 5       --learning_rate 1e-4       --bf16       --bits 4

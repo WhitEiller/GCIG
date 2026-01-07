@@ -4,7 +4,7 @@
 Official implementation of the paper: **"GCIG: GraphRAG-based Cross-document Instruction Generation for Boosting LLM Reasoning"**
 
 <p align="center">
-  <img src="1.png" width="90%" alt="GCIG Framework Overview"/>
+  <img src="resources/1.png" width="90%" alt="GCIG Framework Overview"/>
 </p>
 
 ## Overview
@@ -19,7 +19,7 @@ GCIG is a framework for automatically generating high-quality cross-document ins
 - **Chain-of-Thought-guided Answer Generation (CoTAG)**: Generates interpretable answers with logical depth
 
 <p align="center">
-  <img src="2.png" width="100%" alt="GCIG Architecture"/>
+  <img src="resources/2.png" width="100%" alt="GCIG Architecture"/>
 </p>
 
 ## Project Structure
@@ -98,7 +98,7 @@ bash run_eval_all_models.sh
 ## Experimental Results
 
 <p align="center">
-  <img src="4.png" width="90%" alt="GCIG Framework Overview"/>
+  <img src="resources/4.png" width="90%" alt="GCIG Framework Overview"/>
 </p>
 
 ## Components
