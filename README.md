@@ -473,36 +473,6 @@ MAX_CONCURRENT = 8          # Concurrent threads
 BATCH_SIZE = 80             # Questions per batch
 ```
 
-## Citation
-
-If you find this work useful, please cite our paper:
-
-```bibtex
-@inproceedings{gcig2025,
-  title={GCIG: GraphRAG-based Cross-document Instruction Generation for Boosting LLM Reasoning},
-  author={},
-  booktitle={},
-  year={2025}
-}
-```
-
-#### Citation
-
-If you use ToG-enhanced reasoning components:
-
-```bibtex
-@inproceedings{sun2024thinkongraph,
-  title={Think-on-Graph: Deep and Responsible Reasoning of Large Language Model with Knowledge Graph},
-  author={Sun, Jiashuo and Xu, Chengjin and Tang, Lumingyuan and Wang, Saizhuo and Lin, Chen and Gong, Yeyun and Shum, Heung-Yeung and Guo, Jian},
-  booktitle={International Conference on Learning Representations (ICLR)},
-  year={2024}
-}
-```
-
-**Original Repository:** [ToG on GitHub](https://github.com/GasolSun36/ToG)
-
----
-
 ## Acknowledgements
 
 This project builds upon several excellent open-source projects:
