@@ -60,23 +60,6 @@ GCIG/
 │   │   └── loader.py           # Data loading utilities
 │   └── utils/                  # Embedding, retrieval, transformation
 │
-├── ToG/                        # Think-on-Graph: Deep reasoning on KG (ICLR 2024)
-│   ├── ToG/                    # Core ToG algorithm implementation
-│   │   ├── main_freebase.py    # ToG with Freebase backend
-│   │   ├── main_wiki.py        # ToG with Wikidata backend
-│   │   ├── freebase_func.py    # Relation search, entity pruning, reasoning
-│   │   ├── wiki_func.py        # Wikidata-specific operations
-│   │   ├── utils.py            # LLM interface, BM25/SentenceBERT ranking
-│   │   └── prompt_list.py      # Pruning, scoring, reasoning prompts
-│   ├── CoT/                    # Chain-of-Thought baseline methods
-│   ├── data/                   # 9 KBQA benchmark datasets
-│   ├── eval/                   # Exact Match evaluation
-│   ├── Freebase/               # Freebase KG configuration
-│   └── Wikidata/               # Wikidata KG database & deployment
-│
-├── GraphGen/                   # Synthetic data generation framework
-│   └── ...                     # (see GraphGen/README.md)
-│
 └── baselines/                  # Baseline comparison methods
     ├── self-instruct/
     ├── bonito/
@@ -312,7 +295,7 @@ bash run_eval_all_models.sh
 {
   "question_id": "string",
   "question": "string",
-  "question_type": "Y/N | MCQ | EQA | NLI | SA | TC",
+  "question_type": "Y/N | MCQ | EQA | NLI | SA | TC | MT |",
   "sources": ["text_unit_1", "text_unit_2", ...],
   "entities": ["entity_name_1", "entity_name_2", ...],
   "answer": "string",
@@ -328,6 +311,7 @@ bash run_eval_all_models.sh
 - **NLI**: Natural Language Inference (logical relationship classification)
 - **SA**: Sentiment Analysis (opinion polarity detection)
 - **TC**: Topic Classification (thematic categorization)
+- **MT**: Multi-hop QA (Multi-hop Question Answering)
 
 ## Experimental Results
 
