@@ -221,19 +221,6 @@ openai>=1.0          # LLM API client
 | Embedding | Batch processing reduces API calls |
 | Resilience | Comprehensive exception handling with graceful degradation |
 
-## Citation
-
-If you use this module in your research, please cite:
-
-```bibtex
-@inproceedings{gcig2025,
-  title={GCIG: GraphRAG-based Cross-document Instruction Generation for Boosting LLM Reasoning},
-  author={},
-  booktitle={},
-  year={2025}
-}
-```
-
 ## License
 
 This module is part of the GCIG project, licensed under the Apache License 2.0.
