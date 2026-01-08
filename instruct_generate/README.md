@@ -83,6 +83,7 @@ Seed Entity (BM25) → Subgraph Expansion (Relations) → Text Unit Aggregation 
 | Natural Language Inference | NLI | Logical relationship classification |
 | Sentiment Analysis | SA | Opinion polarity detection |
 | Topic Classification | TC | Thematic categorization |
+| Multi-hop QA | MT | multi-step reasoning across multiple pieces of context |
 
 **Technical Implementation**:
 - Asynchronous batch processing via `ThreadPoolExecutor`
