@@ -275,18 +275,6 @@ graphrag              # Core GraphRAG framework
 | Resilience | Comprehensive error handling with graceful degradation |
 | Resume Support | Skip already-processed questions |
 
-## Citation
-
-If you use this module in your research, please cite:
-
-```bibtex
-@inproceedings{gcig2025,
-  title={GCIG: GraphRAG-based Cross-document Instruction Generation for Boosting LLM Reasoning},
-  author={},
-  booktitle={},
-  year={2025}
-}
-```
 
 ## License
 
