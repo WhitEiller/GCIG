@@ -707,7 +707,7 @@ def main():
     elif args.dataset_name == "hotpot_qa":
         # Load HotpotQA dataset
         import json
-        with open("/mnt/disk/yh24/test1/graphrag-purity/HotpotEval_Test.json", "r") as f:
+        with open("//test1/graphrag-purity/HotpotEval_Test.json", "r") as f:
             data = json.load(f)
 
         # Convert to the expected format for evaluation

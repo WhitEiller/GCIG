@@ -6,8 +6,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 
 # Model paths
-model_path = "/mnt/disk/yh24/test1/bonito/Mistral-7B-v0.1"
-checkpoint_path = "/mnt/disk/yh24/test1/nayak-aclfindings24-code/output/mistral-finetuned3/checkpoint-2685/adapter_model"
+model_path = "//test1/bonito/Mistral-7B-v0.1"
+checkpoint_path = "//test1/nayak-aclfindings24-code/output/mistral-finetuned3/checkpoint-2685/adapter_model"
 
 print("Loading base model...")
 model = AutoModelForCausalLM.from_pretrained(

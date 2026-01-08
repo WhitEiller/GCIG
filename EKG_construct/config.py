@@ -1,14 +1,14 @@
 import os
 import sys
 
-sys.path.append('/mnt/disk/yh24/test1/graphrag-purity')
+sys.path.append('//test1/graphrag-purity')
 
-data_dir = "/mnt/disk/yh24/test1/graphrag-purity/in_put"
+data_dir = "//test1/graphrag-purity/in_put"
 question_path = os.path.join(data_dir, "MultiHopRAG.json")
 corpus_path = os.path.join(data_dir, "corpus.json")  # TODO: 未合并的原始文本doc1, doc2, ...路径
 text_path = os.path.join(data_dir, "text.txt")  # TODO: 合并后的原始的文本，将文档doc1, doc2, ...合并为merge_doc.txt
 
-db_dir = "/mnt/disk/yh24/test1/graphrag-purity/graph_zh"  # TODO: 输出路径
+db_dir = "//test1/graphrag-purity/graph_zh"  # TODO: 输出路径
 text_unit_dir = os.path.join(db_dir, "text_units")
 chunk_dir = os.path.join(db_dir, "chunks")
 graph_dir = os.path.join(db_dir, "graph")

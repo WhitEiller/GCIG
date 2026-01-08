@@ -130,7 +130,7 @@ def embedding(file_path, column, embedding_column, batch_size=100):
     print(f"处理完成！共处理 {len(processed_ids)} 条数据")
 
 def main() -> None:
-    embedding("/mnt/disk/yh24/test1/graphrag-purity/graph_PubMed/text_units/text_units-1-90.parquet", "content", "embedding", batch_size=100)
+    embedding("//test1/graphrag-purity/graph_PubMed/text_units/text_units-1-90.parquet", "content", "embedding", batch_size=100)
 
 if __name__ == "__main__":
     main()

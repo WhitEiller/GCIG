@@ -8,7 +8,7 @@ from tqdm import tqdm
 import time
 import logging
 import re
-sys.path.append('/mnt/disk/yh24/test1/graphrag-purity')
+sys.path.append('//test1/graphrag-purity')
 import networkx as nx
 import pandas as pd
 from tqdm import tqdm
@@ -273,7 +273,7 @@ def save(graph):
 
 # 加载数据
 context = []
-with open('/mnt/disk/yh24/test1/graphrag-purity/input.json', 'r', encoding='utf-8') as f:
+with open('//test1/graphrag-purity/input.json', 'r', encoding='utf-8') as f:
     for line in f:
         line = line.strip()
         if line:

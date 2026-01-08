@@ -114,7 +114,7 @@ def convert_synthetic_results_to_qa_format(data):
 
 if __name__ == "__main__":
     # Process the synthetic_results.json file
-    source_file = "/mnt/disk/yh24/test1/bonito2/synthetic_results.json"
+    source_file = "//test1/bonito2/synthetic_results.json"
     output_file = "data/synthetic_results_clean.json"
     
     print(f"Loading data from {source_file}...")

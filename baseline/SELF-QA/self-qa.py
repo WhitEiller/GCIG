@@ -166,7 +166,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--input_file",
         help="Raw context jsonl path.",
-        default="/mnt/disk/yh24/test1/graphrag-purity/HotpotEval_Corpus.json",
+        default="//test1/graphrag-purity/HotpotEval_Corpus.json",
         type=str,
     )
     parser.add_argument(

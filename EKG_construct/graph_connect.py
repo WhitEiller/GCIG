@@ -24,7 +24,7 @@ connector = SentenceConnector(**ConnectorConfig.get_params())
 #     corpus = json.load(f)
 
 context = []
-with open('/mnt/disk/yh24/test1/graphrag-purity/input.json', 'r', encoding='utf-8') as f:
+with open('//test1/graphrag-purity/input.json', 'r', encoding='utf-8') as f:
     for line in f:
         line = line.strip()
         if line:

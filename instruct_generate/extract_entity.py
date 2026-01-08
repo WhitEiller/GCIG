@@ -1,5 +1,5 @@
 import sys
-sys.path.append('/mnt/disk/yh24/test1/graphrag-purity')
+sys.path.append('//test1/graphrag-purity')
 from graphrag.llm import LLM
 from graphrag.prompts.query.answer import ANSWER_PROMPT
 from gpt import call_chatgpt
@@ -43,8 +43,8 @@ def get_context(texts, graph=None):
     return "\n".join(context), context_dict
 
 
-text_unit_path = "/mnt/disk/yh24/test1/graphrag-purity/graph_contract/text_units/text_units-1-65.parquet"  # TODO: 文本块的路径
-graph_dir = "/mnt/disk/yh24/test1/graphrag-purity/graph_contract/graph"  # TODO: 修改为graph的文件夹
+text_unit_path = "//test1/graphrag-purity/graph_contract/text_units/text_units-1-65.parquet"  # TODO: 文本块的路径
+graph_dir = "//test1/graphrag-purity/graph_contract/graph"  # TODO: 修改为graph的文件夹
 graph, entities, relations = load_graph(graph_dir)
 text_units = load_parquet(text_unit_path)
 text_units = [TextUnit.from_dict(text_unit) for text_unit in text_units]

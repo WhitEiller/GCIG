@@ -28,7 +28,7 @@ BATCH_SIZE = 80    # Number of questions to process in each batch
 SAVE_INTERVAL = 2000  # Save every 10000 questions
 
 # ToG/GraphRAG Configuration
-GRAPH_DIR = "/mnt/disk/yh24/test1/graphrag-purity/graph_zh/graph"  # Path to knowledge graph directory
+GRAPH_DIR = "//test1/graphrag-purity/graph_zh/graph"  # Path to knowledge graph directory
 USE_TOG = True  # Set to False to use direct GPT instead of ToG reasoning
 TOG_DEPTH = 3  # Maximum depth for graph exploration
 TOG_WIDTH = 3  # Number of top candidates to keep at each step
