@@ -1,7 +1,5 @@
 # GCIG: GraphRAG-based Cross-document Instruction Generation
 
-Repo for [ACL Findings 2026] GCIG: GraphRAG-based Cross-document Instruction Generation for Boosting LLM Reasoning.
-
 Official implementation of the paper: **"GCIG: GraphRAG-based Cross-document Instruction Generation for Boosting LLM Reasoning"**
 
 <p align="center">
