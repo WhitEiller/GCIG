@@ -1,5 +1,6 @@
 import json
 import os
+import importlib
 from dataclasses import dataclass, field
 from typing import Optional, Dict
 import logging
@@ -11,7 +12,10 @@ from transformers import (
     set_seed,
 )
 from datasets import load_dataset, Dataset
-from bonito import Bonito, SamplingParams
+from vllm import SamplingParams
+
+bonito_module = importlib.import_module("bonito")
+Bonito = getattr(bonito_module, "Bonito")
 
 
 if torch.cuda.is_available():

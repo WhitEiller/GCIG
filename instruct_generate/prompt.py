@@ -33,17 +33,17 @@ question_prompt2 = """
 **Instruction**:
 Generate three questions from <Source Sentences> based on the provided Rules and the given Examples. Your generated question should reflect the logic of the Source text and conform to the Yes‑or‑No Question Answering task type.
 **Rules**:
-Task Type: Yes-or-No Question Answering​
-The question must be logically inferable from the input Source sentence(s).​
-The expected answer format conclude but not limited to:​
-Yes, no, or maybe?​
-True, False, or Neither?​
-When multiple sentences are provided as Source, consider them together to form a meaningful inference-based question.​
+Task Type: Yes-or-No Question Answering
+The question must be logically inferable from the input Source sentence(s).
+The expected answer format conclude but not limited to:
+Yes, no, or maybe?
+True, False, or Neither?
+When multiple sentences are provided as Source, consider them together to form a meaningful inference-based question.
 The phrasing of the question should be clear, formal, and grammatically correct.
 
 *Examples*: 
 **Source Sentences**:
-“The occurrence of toxicity displays a marked interindividual variation, and for this reason the pharmacokinetics and pharmacodynamics of anthracyclines have been extensively investigated in order to identify integrated models that can be used in the clinical setting to prevent the development of serious toxicity, mainly leucopenia, and maximise tumour exposure. Pharmacokinetics has been recognised to influence both the toxicity and the activity of anthracyclines; in particular, there is increasing evidence that the mode of administration plays an important role for cumulative cardiotoxicity and data indicate that bolus administration, rather than continuous infusion, appears to be an important risk factor for anthracycline-induced cardiomyopathy, thus implying that this type of toxicity is maximum concentration-dependent. On the contrary, exposure to the drug, as measured by area under the curve, seems best related to the occurrence of leucopenia. Finally, the development of pharmacokinetic-pharmacodynamic models allows the simulation of drug effects and ultimately dose optimisation in order to anticipate important toxicities and prevent their occurrence by the administration of prophylactic treatments.” ,​
+“The occurrence of toxicity displays a marked interindividual variation, and for this reason the pharmacokinetics and pharmacodynamics of anthracyclines have been extensively investigated in order to identify integrated models that can be used in the clinical setting to prevent the development of serious toxicity, mainly leucopenia, and maximise tumour exposure. Pharmacokinetics has been recognised to influence both the toxicity and the activity of anthracyclines; in particular, there is increasing evidence that the mode of administration plays an important role for cumulative cardiotoxicity and data indicate that bolus administration, rather than continuous infusion, appears to be an important risk factor for anthracycline-induced cardiomyopathy, thus implying that this type of toxicity is maximum concentration-dependent. On the contrary, exposure to the drug, as measured by area under the curve, seems best related to the occurrence of leucopenia. Finally, the development of pharmacokinetic-pharmacodynamic models allows the simulation of drug effects and ultimately dose optimisation in order to anticipate important toxicities and prevent their occurrence by the administration of prophylactic treatments.” ,
 “Therefore, a physiologically based pharmacokinetic (PBPK) model was developed to assess the potential for drug-drug interactions (DDIs) between orteronel and theophylline, repaglinide, (S)-warfarin and omeprazole, which are sensitive substrates of CYP1A2, 2C8, 2C9 and 2C19, respectively. Simulation of the area under the plasma concentration-time curve (AUC) of these four CYP substrates in the presence and absence of orteronel revealed geometric mean AUC ratios <1.25. Therefore, in accordance with the 2012 US FDA Draft Guidance on DDIs, orteronel can be labeled a 'non-inhibitor' and further clinical DDI evaluation is not required. In PBPK models of moderate and severe renal impairment, the AUC of orteronel was predicted to increase by 52% and 83%, respectively. These results are in agreement with those of a clinical trial in which AUC increases of 38% and 87% were observed in patients with moderate and severe renal impairment, respectively.”
 **Question**:
 
@@ -90,7 +90,7 @@ Generate three distinct Yes/No questions based on the provided `<Source Sentence
 **Examples**
 
 **Source Sentences**:
-“Confidential Information does not include information that the Recipient demonstrates (a) is in the public domain through no fault of, or disclosure by, the Recipient or its Representatives, subsidiaries or affiliates, (b) was properly known to the Recipient, without restriction, prior to disclosure by the Disclosing Party, (c) was properly disclosed to the Recipient by another person, but only if such person is not bound by a confidentiality agreement with the Disclosing Party or is not otherwise restricted from providing such information by a contractual, legal or fiduciary duty. ...” ,​
+“Confidential Information does not include information that the Recipient demonstrates (a) is in the public domain through no fault of, or disclosure by, the Recipient or its Representatives, subsidiaries or affiliates, (b) was properly known to the Recipient, without restriction, prior to disclosure by the Disclosing Party, (c) was properly disclosed to the Recipient by another person, but only if such person is not bound by a confidentiality agreement with the Disclosing Party or is not otherwise restricted from providing such information by a contractual, legal or fiduciary duty. ...” ,
 “If either Party decides not to proceed with the Opportunity, the Parties will promptly return or destroy all Confidential Information received under this Agreement, and all copies, extracts and other objects or items in which such Confidential Information may be contained or embodied, and certify in writing that it has complied with this requirement.”
 
 **Generated Output**:

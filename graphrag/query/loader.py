@@ -4,7 +4,7 @@ from typing import Any
 import networkx as nx
 import pandas as pd
 
-from graphrag.model import *
+from graphrag.model import Entity, Relation
 
 
 def load_parquet(path) -> list[dict[str, Any]]:

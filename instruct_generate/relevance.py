@@ -16,6 +16,7 @@ INPUT_DIR = './question_outputs'
 MAX_CONCURRENT = 4
 BATCH_SIZE = 100
 RELEVANCE_MARKER = '**Relevance**'
+executor = ThreadPoolExecutor(max_workers=MAX_CONCURRENT)
 
 # 解析相关性结果的正则表达式
 RELEVANCE_PATTERN = re.compile(r"(?:^|\n)(?:Answer:|\*\*Answer:\*\*)\s*(Yes|No)\b", re.IGNORECASE)
@@ -186,8 +187,6 @@ async def main():
 
 if __name__ == '__main__':
     start_time = time.time()
-
-    executor = ThreadPoolExecutor(max_workers=MAX_CONCURRENT)
     try:
         asyncio.run(main())
     finally:
@@ -197,4 +196,3 @@ if __name__ == '__main__':
     print(f"\nRelevance assessment completed in {duration:.2f} seconds")
     print(f"Results have been appended under {RELEVANCE_MARKER} in files within {INPUT_DIR}")
     print(f"Each file contains a Yes/No relevance judgment based on the expert content analyst prompt")
-

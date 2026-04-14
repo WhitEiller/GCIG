@@ -4,7 +4,7 @@ import networkx as nx
 import numpy as np
 
 from graphrag.llm import LLM
-from graphrag.model import *
+from graphrag.model import Entity, Relation, TextUnit
 from graphrag.prompts.query.extraction import ENTITY_EXTRACTION
 from graphrag.utils.embedding import get_embedding
 from graphrag.utils.retrieval import get_cos_sim_matrix, retrieve

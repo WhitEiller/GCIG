@@ -18,6 +18,8 @@ class BaselineTask(Task):
     llama_cot_prompt = QUALITY_FEW_SHOT_COT_PROMPT
 
     def __init__(self, input_file: str, data_type: str):
+        # Initialize for static analyzers before Task.__init__ assigns it.
+        self.documents = []
         self._data = self._load_split(input_file, data_type)
         self._create_documents()
         self._dedup()

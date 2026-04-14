@@ -28,7 +28,6 @@ from transformers import (
     HfArgumentParser,
     LlamaTokenizer,
     Trainer,
-    TrainingArguments,
 )
 
 sys.path.insert(2, str(Path(__file__).resolve().parents[1]))

@@ -3,7 +3,7 @@ sys.path.append('//test1/graphrag-purity')
 from graphrag.llm import LLM
 from graphrag.prompts.query.answer import ANSWER_PROMPT
 from gpt import call_chatgpt
-from graphrag.query.retrieval import *
+from graphrag.query.retrieval import retrieve_subgraph, retrieve_text_units
 from collections import Counter
 import json
 import sys

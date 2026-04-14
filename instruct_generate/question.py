@@ -11,6 +11,7 @@ from tqdm import tqdm
 INPUT_DIR = './question_outputs_model4'
 MAX_CONCURRENT = 8  # 最大并发数
 BATCH_SIZE = 100    # 每批保存的文件数
+executor = ThreadPoolExecutor(max_workers=MAX_CONCURRENT)
 
 async def process_file(filename):
     """处理单个文件"""
@@ -69,10 +70,7 @@ async def main():
 
 if __name__ == "__main__":
     start_time = time.time()
-    
-    # 创建线程池
-    executor = ThreadPoolExecutor(max_workers=MAX_CONCURRENT)
-    
+
     # 运行异步主函数
     asyncio.run(main())
     

@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union
 
 import os
 import pkg_resources
@@ -36,11 +36,11 @@ def template_collector(path):
 
 
 @template_collector(TEMPLATES_FOLDER_PATH)
-def gather_templates(templates_dict: dict) -> dict:
+def gather_templates(templates_dict: Optional[dict] = None) -> dict:
     """The function collectrs all the templates in the templates directory.
     If you want to choose only one template, use the choose_template function.
     """
-    return templates_dict
+    return templates_dict or {}
 
 
 def choose_template(

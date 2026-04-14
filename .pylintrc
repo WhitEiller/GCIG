@@ -1,0 +1,15 @@
+[MASTER]
+ignore-paths=
+    ^\.git/.*$
+    ^\.venv/.*$
+    ^venv/.*$
+
+[MESSAGES CONTROL]
+disable=
+    C,
+    R,
+    W,
+    import-error
+
+[FORMAT]
+max-line-length=120

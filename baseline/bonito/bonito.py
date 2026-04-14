@@ -1,8 +1,11 @@
-from bonito import Bonito
+import importlib
+
 from vllm import SamplingParams
 from datasets import load_dataset
 
 # Initialize the Bonito model
+bonito_module = importlib.import_module("bonito")
+Bonito = getattr(bonito_module, "Bonito")
 bonito = Bonito("BatsResearch/bonito-v1")
 
 # load dataset with unannotated text
